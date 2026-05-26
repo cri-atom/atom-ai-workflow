@@ -1,0 +1,19 @@
+---
+import "../styles/global.css";
+import WorkflowRoadmapApp from "@/components/workflow/WorkflowRoadmapApp";
+
+const docsUrl = import.meta.env.PUBLIC_DOCS_URL ?? "http://localhost:3000";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Mapa conceptual del workflow Atom AI — Discovery a Code." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Workflow — Atom AI</title>
+  </head>
+  <body class="min-h-screen antialiased">
+    <WorkflowRoadmapApp client:load docsUrl={docsUrl} />
+  </body>
+</html>

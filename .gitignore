@@ -1,0 +1,9 @@
+node_modules
+dist
+.output
+.astro
+.env
+.env.local
+.DS_Store
+*.log
+.mintlify

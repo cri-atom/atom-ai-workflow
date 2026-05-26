@@ -1,0 +1,11 @@
+@import "@atom-ai/ui/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface text-[hsl(var(--foreground))] antialiased;
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@atom-ai/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "sync-docs-map": "node -e \"import fs from 'node:fs'; import {fileURLToPath} from 'node:url'; import {dirname,join} from 'node:path'; const d=dirname(fileURLToPath(import.meta.url)); const root=join(d,'../..'); const map=join(d,'data/default.json'); fs.copyFileSync(map, join(root,'docs/public/workflow-map.json')); fs.copyFileSync(map, join(root,'apps/web/public/workflow-map.json')); fs.copyFileSync(join(root,'packages/ui/tokens.css'), join(root,'docs/public/styles/atom-tokens.css')); console.log('synced workflow-map.json → docs/public + apps/web/public; atom-tokens.css → docs/public/styles');\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

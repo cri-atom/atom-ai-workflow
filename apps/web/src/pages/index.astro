@@ -1,0 +1,66 @@
+---
+import "../styles/global.css";
+
+const docsUrl = import.meta.env.PUBLIC_DOCS_URL ?? "http://localhost:3000";
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? "http://localhost:4000";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Framework y workflow con IA para discovery, diseño y desarrollo." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Atom AI Workflow</title>
+  </head>
+  <body class="min-h-screen">
+    <main class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-10 px-6 py-16">
+      <header class="space-y-4">
+        <p class="text-sm font-medium text-[hsl(var(--muted-foreground))]">Equipos internos</p>
+        <h1 class="text-4xl font-semibold tracking-tight text-[hsl(var(--foreground))] md:text-5xl">
+          Atom AI Workflow
+        </h1>
+        <p class="text-lg leading-relaxed text-[hsl(var(--muted-foreground))]">
+          Base web para documentar y recorrer un pipeline de discovery, diseño y desarrollo con apoyo de IA. El mapa
+          conceptual interactivo vive en esta web; la guía extendida sigue en Mintlify.
+        </p>
+      </header>
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <a
+          href="/workflow"
+          class="inline-flex items-center justify-center rounded-lg bg-brand px-5 py-3 text-sm font-medium text-brand-foreground shadow-sm transition hover:opacity-95"
+        >
+          Ver Workflow
+        </a>
+        <a
+          href={docsUrl}
+          class="inline-flex items-center justify-center rounded-lg border border-border bg-surface-elevated px-5 py-3 text-sm font-medium text-[hsl(var(--foreground))] transition hover:bg-brand-muted"
+        >
+          Abrir documentación
+        </a>
+        <a
+          href={`${apiUrl}/health`}
+          class="inline-flex items-center justify-center rounded-lg border border-border bg-surface-elevated px-5 py-3 text-sm font-medium text-[hsl(var(--foreground))] transition hover:bg-brand-muted"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Health del API
+        </a>
+      </div>
+
+      <section class="rounded-lg border border-border bg-surface-elevated p-6 text-sm text-[hsl(var(--muted-foreground))]">
+        <p class="font-medium text-[hsl(var(--foreground))]">Desarrollo local</p>
+        <p class="mt-2">
+          Mapa (web): <span class="font-mono text-[hsl(var(--foreground))]">http://localhost:4321/workflow</span>
+        </p>
+        <p class="mt-1">
+          Docs (Mintlify): <span class="font-mono text-[hsl(var(--foreground))]">{docsUrl}</span>
+        </p>
+        <p class="mt-1">
+          API: <span class="font-mono text-[hsl(var(--foreground))]">{apiUrl}</span>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

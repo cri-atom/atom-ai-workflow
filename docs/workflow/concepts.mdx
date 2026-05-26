@@ -1,0 +1,34 @@
+---
+title: Mapa conceptual
+description: Contexto del workflow (Figma + Confluence). El mapa interactivo está en el sitio web.
+---
+
+El mapa refleja el flujo del frame Figma (**Discovery → Define → Explore → Handoff → Code**) y una rama **Design system** más el bloque **Operación** (governance, Jira, Push Check). Los textos de los paneles resumen la guía interna en Confluence.
+
+## Mapa interactivo (sitio web)
+
+Abre el mapa en React Flow con panel de detalle en la ruta **`/workflow`** del sitio web (en local suele ser `http://localhost:4321/workflow`). En despliegue, usa la URL pública del sitio marketing + `/workflow`.
+
+Opcional: define `PUBLIC_WEB_URL` en `docs/.env` si enlazas a la web desde otros snippets o automatizaciones; esta página no lo requiere para leerse.
+
+## Leyenda de colores (nodos)
+
+| Categoría | Significado |
+| --- | --- |
+| **Beige / input** | Inputs de contexto, notas, operación |
+| **Amarillo / skill** | Skills con prompts estructurados |
+| **Morado / tool** | Herramientas IA (Gemini, Figma Make, v0, etc.) |
+| **Verde / artifact** | Entregables (handoff Figma, FRD, loops 3C) |
+| **Azul / code** | Implementación y stack de coding |
+
+Las líneas **discontinuas** unen ramas auxiliares (design system, operación).
+
+## Datos y Confluence
+
+- **Origen API:** `GET /api/v1/maps/default` sirve el archivo `apps/api/data/default.json` del monorepo.
+- **Fallback en la web:** si el API no está levantado, la app carga `/workflow-map.json` desde `apps/web/public/` (misma copia que `docs/public/` tras sincronizar).
+- **Guía completa:** cada panel enlaza a [AI Workflow Guide - Atomchat en Confluence](https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat) (id de página `4210524161`; la tiny `/wiki/x/AYD3_g` apunta a la misma página).
+
+Tras editar el mapa en el repo, regenera el JSON con `node apps/api/data/build-default-map.mjs` y sincroniza con `npm run sync-docs-map -w @atom-ai/api` (copia `default.json` → `docs/public/workflow-map.json` y `apps/web/public/workflow-map.json`, y `packages/ui/tokens.css` → `docs/public/styles/atom-tokens.css`).
+
+En la vista Workflow, haz clic en un nodo para ver el panel con **Markdown** (tablas, listas, código) y recursos.

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Atom AI Workflow",
+  "colors": {
+    "primary": "#0f766e",
+    "light": "#14b8a6",
+    "dark": "#0f766e"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Introducción",
+        "pages": [
+          "introduction"
+        ]
+      },
+      {
+        "group": "Workflow",
+        "pages": [
+          "workflow/concepts"
+        ]
+      },
+      {
+        "group": "Agente (próximamente)",
+        "pages": [
+          "guides/local-agent"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Sitio",
+        "href": "http://localhost:4321"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {}
+  }
+}

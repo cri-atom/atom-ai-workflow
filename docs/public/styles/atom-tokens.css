@@ -1,0 +1,24 @@
+:root {
+  --brand: 168 72% 32%;
+  --brand-foreground: 0 0% 100%;
+  --brand-muted: 168 35% 94%;
+  --surface: 210 20% 98%;
+  --surface-elevated: 0 0% 100%;
+  --border: 220 13% 91%;
+  --foreground: 224 71% 4%;
+  --muted-foreground: 220 9% 46%;
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.375rem;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.dark {
+  --surface: 224 71% 6%;
+  --surface-elevated: 224 71% 8%;
+  --border: 215 14% 20%;
+  --foreground: 210 20% 98%;
+  --muted-foreground: 215 14% 65%;
+  --brand-muted: 168 25% 16%;
+}

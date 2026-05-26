@@ -1,0 +1,27 @@
+{
+  "name": "atom-ai-workflow",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0 <21.0.0"
+  },
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "docs"
+  ],
+  "scripts": {
+    "dev": "node scripts/check-node.mjs && concurrently -n api,web,docs -c blue,cyan,magenta \"npm run dev -w @atom-ai/api\" \"npm run dev -w @atom-ai/web\" \"npm run dev -w @atom-ai/docs\"",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "volta": {
+    "node": "20.20.2"
+  }
+}
