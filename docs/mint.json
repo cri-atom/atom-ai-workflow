@@ -15,11 +15,11 @@
   "topbarLinks": [
     {
       "name": "Sitio",
-      "url": "https://REPLACE_WITH_YOUR_VERCEL_URL.vercel.app"
+      "url": "https://atom-ai-workflow-web.vercel.app/"
     },
     {
       "name": "Workflow",
-      "url": "https://REPLACE_WITH_YOUR_VERCEL_URL.vercel.app/workflow"
+      "url": "https://atom-ai-workflow-web.vercel.app/workflow"
     }
   ],
   "navigation": [

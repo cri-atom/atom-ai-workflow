@@ -14,7 +14,16 @@ export function getToolkitRoot() {
   return join(__dirname, "..");
 }
 
-export { loadConfig, loadRegistry, initState, loadState, saveState, runSkill, runPipeline };
+export {
+  loadConfig,
+  loadRegistry,
+  resolveProjectConfig,
+  initState,
+  loadState,
+  saveState,
+  runSkill,
+  runPipeline,
+};
 
 /**
  * @param {string} [toolkitRoot]

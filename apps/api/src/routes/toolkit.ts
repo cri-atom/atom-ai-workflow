@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { resolveProjectConfig } from "@atom-ai/toolkit";
 import {
   ensureProject,
   getProjectState,
@@ -10,6 +9,7 @@ import {
   listSkills,
   readProjectOutput,
   readSkillFile,
+  resolveProjectConfig,
   resolveProjectRoot,
   resolveToolkitRoot,
   runPipeline,
@@ -112,7 +112,7 @@ toolkitRouter.post("/projects/:id/run/:skillId", async (req, res) => {
     const toolkitRoot = resolveToolkitRoot();
     const { config, registry } = getToolkitConfigForApi();
     const projectConfig = resolveProjectConfig(config, projectRoot);
-    let state = initialState ?? loadState(getStateDirFromConfig(projectConfig));
+    let state = initialState ?? loadState(getStateDirFromConfig(projectConfig as Record<string, unknown>));
     if (!state) {
       const init = initProject(projectRoot, projectId);
       state = init.state;
@@ -157,7 +157,7 @@ toolkitRouter.post("/projects/:id/run-pipeline", async (req, res) => {
     const toolkitRoot = resolveToolkitRoot();
     const { config, registry } = getToolkitConfigForApi();
     const projectConfig = resolveProjectConfig(config, projectRoot);
-    let state = initialState ?? loadState(getStateDirFromConfig(projectConfig));
+    let state = initialState ?? loadState(getStateDirFromConfig(projectConfig as Record<string, unknown>));
     if (!state) {
       const init = initProject(projectRoot, projectId);
       state = init.state;

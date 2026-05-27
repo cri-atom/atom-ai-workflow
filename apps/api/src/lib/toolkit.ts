@@ -10,6 +10,7 @@ import {
   listSkills,
   loadRegistry,
   readSkillFile,
+  resolveProjectConfig,
   runPipeline,
   runSkill,
 } from "@atom-ai/toolkit";
@@ -53,6 +54,7 @@ export {
   listSkills,
   loadRegistry,
   readSkillFile,
+  resolveProjectConfig,
   runPipeline,
   runSkill,
   getProjectState,
