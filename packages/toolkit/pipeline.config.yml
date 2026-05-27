@@ -1,0 +1,57 @@
+version: "1.0"
+
+# ─────────────────────────────────────────────
+# DEFAULT PROVIDER + MODEL
+# ─────────────────────────────────────────────
+provider: claude
+model: claude-sonnet-4-20250514
+max_tokens: 8000
+
+# Override per skill in SKILL.md frontmatter:
+# model: claude-opus-4-20250514  # for wide refactors / architecture
+
+# ─────────────────────────────────────────────
+# PROVIDER OPTIONS
+# ─────────────────────────────────────────────
+providers:
+  claude:
+    api_key_env: ANTHROPIC_API_KEY
+    base_url: https://api.anthropic.com/v1/messages
+    models:
+      default: claude-sonnet-4-20250514
+      heavy: claude-opus-4-20250514
+  gemini:
+    api_key_env: GEMINI_API_KEY
+    models:
+      default: gemini-2.5-flash
+      heavy: gemini-3.1-pro
+  kimi:
+    api_key_env: KIMI_API_KEY
+    models:
+      default: kimi-2.5
+
+# ─────────────────────────────────────────────
+# PIPELINE DEFAULTS
+# ─────────────────────────────────────────────
+pipeline:
+  state_dir: .atom-ai           # relative to project root
+  output_dir: .atom-ai/outputs  # where skill outputs are saved
+  context_mode: cumulative      # each skill receives all prior outputs
+  on_ambiguity: ask             # ask | skip | flag-tbd
+  on_async: pause               # pause | skip | flag-async
+
+# ─────────────────────────────────────────────
+# OUTPUT FORMAT
+# ─────────────────────────────────────────────
+output:
+  format: markdown
+  save: true
+  print: true
+  clipboard: false              # set true to auto-copy last output
+
+# ─────────────────────────────────────────────
+# LOGGING
+# ─────────────────────────────────────────────
+logging:
+  level: info                   # debug | info | warn | error
+  file: .atom-ai/run.log

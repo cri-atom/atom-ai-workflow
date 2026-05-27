@@ -1,6 +1,7 @@
 {
   "id": "default",
-  "title": "Atom AI — Feature workflow (Figma + Confluence)",
+  "title": "Atom AI — Feature workflow (toolkit)",
+  "schemaVersion": 2,
   "nodes": [
     {
       "id": "discovery",
@@ -11,100 +12,82 @@
       },
       "data": {
         "category": "input",
+        "nodeKind": "input",
         "label": "Discovery",
-        "summary": "Inputs de contexto y síntesis con Gemini; alimenta todo el pipeline.",
-        "bodyMd": "## Inputs (marco Figma)\n\n- Reunión / notas, **Slack thread**, FRD/specs, **screenshots**, ideas/bocetos\n- **Artefactos / datos:** Mixpanel · Product Fruits, research/entrevistas (TBD proceso)\n\n## Herramienta IA (morado en diagrama)\n\n- **Google AI Studio — Gemini 2.5 / 3.1:** síntesis · `context.md` · styleguide · visión\n- **Tool:** input = *todo lo anterior*\n\n## Guía Confluence (extracto)\n\n**Objetivo:** flujo Discovery → Design → Code continuo, trazable y mejorable con IA.\n\n**Principios:** cada herramienta con rol claro; outputs del paso N son inputs del N+1; artefactos de texto sirven para comunicar al equipo y como prompt para la siguiente herramienta.",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "summary": "Notas, screenshots, datos de producto y contexto del feature.",
+        "bodyMd": "Pega aquí el contexto inicial antes de ejecutar skills. Los outputs de cada skill se acumulan en el proyecto (`.atom-ai/outputs/`)."
       }
     },
     {
-      "id": "define",
+      "id": "ux-analysis-redesign",
       "type": "concept",
       "position": {
         "x": 280,
-        "y": 170
+        "y": 140
       },
       "data": {
         "category": "skill",
-        "label": "Define",
-        "summary": "Skills de análisis UX y breadboarding; ordenan el caos antes de prototipar.",
-        "bodyMd": "## Skills (rama Feature)\n\n### `ux-analysis-and-redesign-plan`\n- **Cuándo:** hay UI existente que mejorar (no pantalla en blanco).\n- **Inputs:** screenshots, notas, conversación, contexto del feature.\n- **Output:** plan de rediseño (diagnóstico heurístico, copy nuevo, wireframe ASCII, impacto UX).\n- **Restricciones:** solo layout/copy/jerarquía; **no** inventa componentes ni modifica tokens.\n\n### `user-flows-breadboarding-generator`\n- **Cuándo:** antes de diseñar o prototipar; input desordenado.\n- **Output:** flows en **Breadboarding** (Places → Elements → Connections → Edge Cases) en Markdown.\n- **Uso posterior:** input para Figma Make, prototipo HTML o `figma-handoff-structure-generator`.\n\n### Cadena canónica (resumen)\n```\ninputs → ux-analysis (si hay UI) → breadboarding → frd-hdu → figma-handoff-structure → Figma handoff → dev\n```",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "nodeKind": "skill",
+        "skillId": "ux-analysis-redesign",
+        "optional": true,
+        "model": "claude-sonnet-4-20250514",
+        "phase": "analysis",
+        "label": "ux analysis redesign",
+        "summary": "when existing UI needs improvement — not for blank canvas"
       }
     },
     {
-      "id": "explore",
+      "id": "user-flows-breadboarding",
       "type": "concept",
       "position": {
         "x": 280,
-        "y": 340
+        "y": 280
       },
       "data": {
-        "category": "tool",
-        "label": "Explore",
-        "summary": "Prototipado rápido (Inverse Handoff): Figma Make, guidelines y exploración v0/Gemini Build.",
-        "bodyMd": "## Inverse Handoff (diagrama)\n\nElegir **guideline** según entregable (app shell en prod, mockup shell, blur layout A/B, etc.).\n\n### Rutas típicas\n- **Figma Make (Sonnet/Opus):** prototipo React interactivo (guidelines → UX flows → diseño).\n- **Gemini Build / v0.dev:** exploración rápida HTML/React cuando conviene más fotos o prompt corto.\n\n### Guidelines (Confluence §4)\n\nArchivos de sistema en Figma Make para no repetir tokens en cada prompt. Decisión en árbol:\n\n- Feature en producción → guideline app shell completo\n- Iteración en main content → mockup shell\n- Rediseño double sidebar / icon rail → layouts blur A o B\n\n### Figma Design (intermedio)\n\nScreens estáticas y UX flows visuales (**handoff real** hacia documentación y handoff estático).",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "category": "skill",
+        "nodeKind": "skill",
+        "skillId": "user-flows-breadboarding",
+        "optional": false,
+        "model": "claude-sonnet-4-20250514",
+        "phase": "definition",
+        "label": "user flows breadboarding",
+        "summary": "before designing or prototyping any feature"
       }
     },
     {
-      "id": "handoff",
+      "id": "frd-hdu",
       "type": "concept",
       "position": {
         "x": 280,
-        "y": 510
+        "y": 420
       },
       "data": {
-        "category": "artifact",
-        "label": "Handoff",
-        "summary": "FRD+HU, guía de canvas Figma y entrega estática; loop 3C con desarrollo.",
-        "bodyMd": "## Documentación\n\n### `prd-hdu-generator`\n- **Output:** FRD con historias de usuario y **criterios de aceptación** (UI-agnóstico: negocio, estado, flujo de datos).\n- **Destino:** Confluence / Jira.\n\n### `figma-handoff-structure-generator`\n- **Input obligatorio:** FRD.\n- **Opcionales:** flows, análisis, prototipos, código.\n- **Output:** guía de armado del canvas con patrón intercalado por HU.\n\n## Figma Design — handoff estático\n\nDiseñador arma canvas siguiendo la guía; screens por HU; entrega a dev.\n\n- **Push Check:** notificar al equipo al cerrar entrega.\n- **TBD:** Claude Code + Figma MCP para automatizar armado.\n\n## Loop con dev — **3C**\n\n**Card + Conversation + Confirmation:** refinamiento de PRD, refinamiento de handoff, estimación en sprint.",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "category": "skill",
+        "nodeKind": "skill",
+        "skillId": "frd-hdu",
+        "optional": false,
+        "model": "claude-sonnet-4-20250514",
+        "phase": "definition",
+        "label": "frd hdu",
+        "summary": "when formal requirements are needed for dev team"
       }
     },
     {
-      "id": "code",
+      "id": "figma-handoff-structure",
       "type": "concept",
       "position": {
         "x": 280,
-        "y": 680
+        "y": 560
       },
       "data": {
-        "category": "code",
-        "label": "Code",
-        "summary": "Stack de coding: Claude Code, Kimi, v0, Gemini CLI según scope; iteración hasta merge.",
-        "bodyMd": "## Desde la guía — base de código\n\n| Alcance | Herramientas sugeridas |\n|--------|-------------------------|\n| Scaffold / MVP / mini refactors | **Claude Code (Sonnet)** o **Kimi 2.5** (free tier) |\n| Componentes rápidos UI | **v0.dev** o **Google AI Studio Build** |\n| Plan + doc de codebase | **Gemini CLI** (2.5) |\n| Frontend/componentes en terminal | **Gemini CLI** (3.1) |\n| Wide refactors / arquitectura | **Claude Code (Opus)** |\n\n## Iteración\n\nSprint → revisión → merge → entrega. Puentes **Figma → Claude Code** hoy manuales; **Figma MCP** en exploración.",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "category": "skill",
+        "nodeKind": "skill",
+        "skillId": "figma-handoff-structure",
+        "optional": false,
+        "model": "claude-sonnet-4-20250514",
+        "phase": "handoff",
+        "label": "figma handoff structure",
+        "summary": "when FRD exists and designer needs to assemble Figma canvas"
       }
     },
     {
@@ -112,85 +95,99 @@
       "type": "concept",
       "position": {
         "x": 560,
-        "y": 340
-      },
-      "data": {
-        "category": "skill",
-        "label": "Design system",
-        "summary": "Rama paralela: documentar componentes del DS con skill y handoff a dev.",
-        "bodyMd": "## Pipeline Design System (Confluence §6)\n\n```\nDescripción del componente (anatomía, tamaños, estados, variantes)\n    → Skill: ds-component-docs\n    → Patrón A / B / C + copy de layout\n    → Diseñador documenta en Figma\n    → (futuro) Claude Code + Figma MCP\n```\n\n### `ds-component-docs`\n- **Output:** copy + guía de layout para frames del DS (patrón **A** flat, **B** grouped, **C** subsections).",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
-      }
-    },
-    {
-      "id": "meta-governance",
-      "type": "concept",
-      "position": {
-        "x": 560,
-        "y": 510
+        "y": 140
       },
       "data": {
         "category": "input",
-        "label": "Operación",
-        "summary": "Task management, Push Check, governance del workflow y changelog.",
-        "bodyMd": "## Task management (Confluence §8)\n\nSubtasks **En ejecución** vs **En revisión** en Jira para leer el tablero sin ambigüedad.\n\n## Push Check\n\nAcción de notificación al completar entrega (Slack, comentario Jira, etc.) — *checklist personal* de “ya avisé”.\n\n## Governance (§9)\n\nSkills como contratos: versionar, probar con 2–3 inputs antes de publicar cambios, registrar en **changelog (§10)**.\n\n## Post mortem (§11)\n\nRegistrar qué funcionó / qué no / qué cambiar después de cada ciclo.",
-        "resources": [
-          {
-            "label": "AI Workflow Guide (Confluence)",
-            "href": "https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat",
-            "external": true
-          }
-        ]
+        "nodeKind": "input",
+        "label": "Design system",
+        "summary": "Documentación de componente DS (rama independiente)."
+      }
+    },
+    {
+      "id": "ds-component-docs",
+      "type": "concept",
+      "position": {
+        "x": 560,
+        "y": 280
+      },
+      "data": {
+        "category": "skill",
+        "nodeKind": "skill",
+        "skillId": "ds-component-docs",
+        "optional": false,
+        "model": "claude-sonnet-4-20250514",
+        "phase": "design",
+        "branch": "design-system",
+        "label": "DS component docs",
+        "summary": "when documenting a new or existing DS component for Figma"
       }
     }
   ],
   "edges": [
     {
-      "id": "e1",
+      "id": "e-discovery-ux-analysis-redesign",
       "source": "discovery",
-      "target": "define",
-      "animated": true
-    },
-    {
-      "id": "e2",
-      "source": "define",
-      "target": "explore",
-      "animated": true
-    },
-    {
-      "id": "e3",
-      "source": "explore",
-      "target": "handoff",
-      "animated": true
-    },
-    {
-      "id": "e4",
-      "source": "handoff",
-      "target": "code",
-      "animated": true
-    },
-    {
-      "id": "e5",
-      "source": "explore",
-      "target": "design-system",
+      "target": "ux-analysis-redesign",
       "animated": false,
+      "data": {
+        "required": false
+      },
       "style": {
         "strokeDasharray": "6 4"
       }
     },
     {
-      "id": "e6",
-      "source": "handoff",
-      "target": "meta-governance",
+      "id": "e-ux-analysis-redesign-user-flows-breadboarding",
+      "source": "ux-analysis-redesign",
+      "target": "user-flows-breadboarding",
+      "animated": true,
+      "data": {
+        "required": true
+      }
+    },
+    {
+      "id": "e-user-flows-breadboarding-frd-hdu",
+      "source": "user-flows-breadboarding",
+      "target": "frd-hdu",
+      "animated": true,
+      "data": {
+        "required": true
+      }
+    },
+    {
+      "id": "e-frd-hdu-figma-handoff-structure",
+      "source": "frd-hdu",
+      "target": "figma-handoff-structure",
+      "animated": true,
+      "data": {
+        "required": true
+      }
+    },
+    {
+      "id": "e-ds-branch",
+      "source": "design-system",
+      "target": "ds-component-docs",
       "animated": false,
+      "data": {
+        "required": false
+      },
       "style": {
         "strokeDasharray": "6 4"
+      }
+    },
+    {
+      "id": "e-flows-ds-hint",
+      "source": "user-flows-breadboarding",
+      "target": "design-system",
+      "animated": false,
+      "data": {
+        "required": false,
+        "hint": true
+      },
+      "style": {
+        "strokeDasharray": "4 6",
+        "opacity": 0.5
       }
     }
   ]

@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "dev": "node scripts/check-node.mjs && concurrently -n api,web,docs -c blue,cyan,magenta \"npm run dev -w @atom-ai/api\" \"npm run dev -w @atom-ai/web\" \"npm run dev -w @atom-ai/docs\"",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "sync-workflow": "npm run sync-workflow -w @atom-ai/api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

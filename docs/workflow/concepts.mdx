@@ -1,34 +1,44 @@
 ---
 title: Mapa conceptual
-description: Contexto del workflow (Figma + Confluence). El mapa interactivo está en el sitio web.
+description: Pipeline de skills en el repo (sin Confluence). Mapa interactivo en el sitio web.
 ---
 
-El mapa refleja el flujo del frame Figma (**Discovery → Define → Explore → Handoff → Code**) y una rama **Design system** más el bloque **Operación** (governance, Jira, Push Check). Los textos de los paneles resumen la guía interna en Confluence.
+El flujo sigue el **atom-ai-toolkit**: skills encadenados con outputs acumulativos en `.atom-ai/outputs/`. La fuente de verdad son los archivos en `packages/toolkit/skills/` y `skills/_registry.yml`.
 
-## Mapa interactivo (sitio web)
+## Mapa interactivo
 
-Abre el mapa en React Flow con panel de detalle en la ruta **`/workflow`** del sitio web (en local suele ser `http://localhost:4321/workflow`). En despliegue, usa la URL pública del sitio marketing + `/workflow`.
+Abre **[http://localhost:4321/workflow](http://localhost:4321/workflow)** (o tu URL de producción + `/workflow`).
 
-Opcional: define `PUBLIC_WEB_URL` en `docs/.env` si enlazas a la web desde otros snippets o automatizaciones; esta página no lo requiere para leerse.
+- Clic en un nodo **skill** → pestaña **Skill** (contenido de `SKILL.md`).
+- Pestaña **Ejecutar** → input + provider/model → **Run skill** (requiere API con claves LLM en `.env`).
+- Pestaña **Output** → markdown generado del run.
 
-## Leyenda de colores (nodos)
+## Skills (IDs)
 
-| Categoría | Significado |
-| --- | --- |
-| **Beige / input** | Inputs de contexto, notas, operación |
-| **Amarillo / skill** | Skills con prompts estructurados |
-| **Morado / tool** | Herramientas IA (Gemini, Figma Make, v0, etc.) |
-| **Verde / artifact** | Entregables (handoff Figma, FRD, loops 3C) |
-| **Azul / code** | Implementación y stack de coding |
+| ID | Fase | Opcional |
+| --- | --- | --- |
+| `ux-analysis-redesign` | analysis | Sí |
+| `user-flows-breadboarding` | definition | No |
+| `frd-hdu` | definition | No |
+| `figma-handoff-structure` | handoff | No |
+| `ds-component-docs` | design (rama DS) | No |
 
-Las líneas **discontinuas** unen ramas auxiliares (design system, operación).
+## Sincronizar mapa en docs/web
 
-## Datos y Confluence
+Tras cambiar `_registry.yml` o posiciones del generador:
 
-- **Origen API:** `GET /api/v1/maps/default` sirve el archivo `apps/api/data/default.json` del monorepo.
-- **Fallback en la web:** si el API no está levantado, la app carga `/workflow-map.json` desde `apps/web/public/` (misma copia que `docs/public/` tras sincronizar).
-- **Guía completa:** cada panel enlaza a [AI Workflow Guide - Atomchat en Confluence](https://atomchat.atlassian.net/wiki/spaces/PD/pages/4210524161/AI+Workflow+Guide+-+Atomchat) (id de página `4210524161`; la tiny `/wiki/x/AYD3_g` apunta a la misma página).
+```bash
+npm run sync-workflow
+```
 
-Tras editar el mapa en el repo, regenera el JSON con `node apps/api/data/build-default-map.mjs` y sincroniza con `npm run sync-docs-map -w @atom-ai/api` (copia `default.json` → `docs/public/workflow-map.json` y `apps/web/public/workflow-map.json`, y `packages/ui/tokens.css` → `docs/public/styles/atom-tokens.css`).
+Eso regenera `apps/api/data/default.json` y copia `workflow-map.json` a `docs/public` y `apps/web/public`.
 
-En la vista Workflow, haz clic en un nodo para ver el panel con **Markdown** (tablas, listas, código) y recursos.
+## CLI (toolkit)
+
+Desde la raíz del monorepo (con `@atom-ai/toolkit` instalado):
+
+```bash
+npx atom-ai init --project "mi-feature"   # si usas el bin del toolkit en packages/toolkit
+```
+
+La web usa el API (`POST /api/v1/projects`, `POST .../run/:skillId`) con proyectos bajo `apps/api/data/projects/`.

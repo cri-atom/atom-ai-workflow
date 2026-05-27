@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AtomAI Pipeline State",
+  "description": "Stateful record of a pipeline run. Persisted to .atom-ai/state.json per project.",
+  "type": "object",
+  "required": ["run_id", "project", "phase", "created_at", "updated_at", "skills"],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "Unique run identifier. Format: YYYY-MM-DD-slug"
+    },
+    "project": {
+      "type": "string",
+      "description": "Project or feature name"
+    },
+    "phase": {
+      "type": "string",
+      "enum": ["discovery", "analysis", "definition", "design", "handoff", "build"],
+      "description": "Current active phase"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "skills": {
+      "type": "object",
+      "description": "Map of skill-id to execution record",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "started_at"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["pending", "running", "done", "skipped", "failed"]
+          },
+          "started_at": { "type": "string", "format": "date-time" },
+          "completed_at": { "type": "string", "format": "date-time" },
+          "input_snapshot": {
+            "type": "string",
+            "description": "Path to input file used in this run"
+          },
+          "output_path": {
+            "type": "string",
+            "description": "Path to output file produced"
+          },
+          "model_used": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "context_stack": {
+      "type": "array",
+      "description": "Ordered list of output paths that form the accumulated context",
+      "items": { "type": "string" }
+    },
+    "async_pending": {
+      "type": "array",
+      "description": "Skills paused waiting for external async input",
+      "items": { "type": "string" }
+    }
+  }
+}

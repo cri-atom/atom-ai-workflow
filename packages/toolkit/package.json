@@ -1,0 +1,21 @@
+{
+  "name": "@atom-ai/toolkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Atom AI skills pipeline — registry, runner, programmatic API",
+  "type": "module",
+  "main": "./runner/programmatic.js",
+  "exports": {
+    ".": {
+      "types": "./runner/programmatic.d.ts",
+      "import": "./runner/programmatic.js"
+    }
+  },
+  "types": "./runner/programmatic.d.ts",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,176 @@
+version: "1.0"
+updated: "2025"
+author: cri.atom
+
+# ─────────────────────────────────────────────
+# FEATURE PIPELINE
+# ─────────────────────────────────────────────
+# discovery → analysis → definition → design → handoff → build
+#
+# Chain: 01 → 02 → 03 → 04
+# 01 is optional (only when UI exists)
+# Each skill's output feeds the next as accumulated context
+# ─────────────────────────────────────────────
+
+skills:
+
+  - id: ux-analysis-redesign
+    path: skills/01-ux-analysis-redesign/SKILL.md
+    phase: analysis
+    version: "3.0"
+    optional: true
+    trigger: "when existing UI needs improvement — not for blank canvas"
+    input:
+      - screenshots
+      - meeting-notes
+      - feature-description
+      - slack-thread
+    output:
+      - redesign-plan
+    feeds_into:
+      - user-flows-breadboarding
+      - frd-hdu
+    next: user-flows-breadboarding
+    async_ok: false
+    model: claude-sonnet-4-20250514
+
+  - id: user-flows-breadboarding
+    path: skills/02-user-flows-breadboarding/SKILL.md
+    phase: definition
+    version: "3.0"
+    optional: false
+    trigger: "before designing or prototyping any feature"
+    input:
+      - meeting-notes
+      - feature-description
+      - frd-draft
+      - screenshots
+      - slack-thread
+      - redesign-plan         # from ux-analysis-redesign (optional)
+    output:
+      - ux-flows
+    feeds_into:
+      - frd-hdu
+      - figma-handoff-structure
+    next: frd-hdu
+    async_ok: false
+    model: claude-sonnet-4-20250514
+
+  - id: frd-hdu
+    path: skills/03-frd-hdu/SKILL.md
+    phase: definition
+    version: "2.0"
+    optional: false
+    trigger: "when formal requirements are needed for dev team"
+    input:
+      - meeting-notes
+      - feature-description
+      - ux-flows              # from user-flows-breadboarding (recommended)
+      - redesign-plan         # from ux-analysis-redesign (optional)
+      - figma-handoff         # optional, if design exists before FRD
+    output:
+      - frd
+    feeds_into:
+      - figma-handoff-structure
+    destination:
+      - Confluence
+      - Jira
+    next: figma-handoff-structure
+    async_ok: false
+    model: claude-sonnet-4-20250514
+
+  - id: figma-handoff-structure
+    path: skills/04-figma-handoff-structure/SKILL.md
+    phase: handoff
+    version: "2.1"
+    optional: false
+    trigger: "when FRD exists and designer needs to assemble Figma canvas"
+    input:
+      - frd                   # REQUIRED — from frd-hdu
+      - ux-flows              # optional — from user-flows-breadboarding
+      - redesign-plan         # optional — from ux-analysis-redesign
+      - prototype-description # optional — from any prototype tool
+    output:
+      - figma-canvas-guide
+    feeds_into:
+      - figma-design-assembly  # manual by designer
+      - figma-mcp-agent        # future automation [TBD]
+    next: null
+    async_ok: false
+    model: claude-sonnet-4-20250514
+    future:
+      tool: claude-code + figma-mcp
+      status: TBD
+
+# ─────────────────────────────────────────────
+# DESIGN SYSTEM BRANCH
+# ─────────────────────────────────────────────
+# Independent of feature pipeline
+# Operates on existing DS components
+# ─────────────────────────────────────────────
+
+  - id: ds-component-docs
+    path: skills/05-ds-component-docs/SKILL.md
+    phase: design
+    version: "2.0"
+    branch: design-system
+    optional: false
+    trigger: "when documenting a new or existing DS component for Figma"
+    input:
+      - component-description  # anatomy, variants, states
+      - figma-link             # optional
+      - existing-docs          # optional, to extend
+      - design-token-reference # optional
+    output:
+      - component-documentation
+    feeds_into:
+      - figma-ds-assembly      # manual by designer
+      - figma-mcp-agent        # future automation [TBD]
+    next: null
+    async_ok: false
+    model: claude-sonnet-4-20250514
+    future:
+      tool: claude-code + figma-mcp
+      status: TBD
+
+# ─────────────────────────────────────────────
+# PIPELINE MAPS
+# ─────────────────────────────────────────────
+
+pipelines:
+
+  full:
+    description: "Complete feature pipeline from analysis to handoff"
+    steps:
+      - ux-analysis-redesign   # optional — skip if blank canvas
+      - user-flows-breadboarding
+      - frd-hdu
+      - figma-handoff-structure
+
+  flows-only:
+    description: "Generate UX flows only — for quick exploration"
+    steps:
+      - user-flows-breadboarding
+
+  frd-only:
+    description: "Generate FRD from existing flows or notes"
+    steps:
+      - frd-hdu
+
+  handoff-only:
+    description: "Generate Figma canvas structure from existing FRD"
+    steps:
+      - figma-handoff-structure
+
+  redesign:
+    description: "Analyze existing UI and produce full redesign docs"
+    steps:
+      - ux-analysis-redesign
+      - user-flows-breadboarding
+      - frd-hdu
+      - figma-handoff-structure
+
+  ds:
+    description: "Design system component documentation"
+    steps:
+      - ds-component-docs

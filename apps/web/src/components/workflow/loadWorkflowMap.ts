@@ -6,6 +6,12 @@ export type WorkflowResource = {
 
 export type WorkflowNodeData = {
   category?: string;
+  nodeKind?: "input" | "skill" | "output";
+  skillId?: string;
+  optional?: boolean;
+  model?: string;
+  phase?: string;
+  branch?: string;
   label: string;
   summary?: string;
   bodyMd?: string;

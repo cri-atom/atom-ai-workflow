@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { supabaseConfigured } from "./lib/supabase.js";
+import { toolkitRouter } from "./routes/toolkit.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -46,6 +47,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use("/api/v1", toolkitRouter);
 
 app.get("/health", (_req, res) => {
   res.json({

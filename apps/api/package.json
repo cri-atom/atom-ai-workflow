@@ -7,13 +7,17 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/index.js",
-    "sync-docs-map": "node -e \"import fs from 'node:fs'; import {fileURLToPath} from 'node:url'; import {dirname,join} from 'node:path'; const d=dirname(fileURLToPath(import.meta.url)); const root=join(d,'../..'); const map=join(d,'data/default.json'); fs.copyFileSync(map, join(root,'docs/public/workflow-map.json')); fs.copyFileSync(map, join(root,'apps/web/public/workflow-map.json')); fs.copyFileSync(join(root,'packages/ui/tokens.css'), join(root,'docs/public/styles/atom-tokens.css')); console.log('synced workflow-map.json → docs/public + apps/web/public; atom-tokens.css → docs/public/styles');\""
+    "build-map": "node scripts/build-map-from-registry.mjs",
+    "sync-docs-map": "node -e \"import fs from 'node:fs'; import {fileURLToPath} from 'node:url'; import {dirname,join} from 'node:path'; const d=dirname(fileURLToPath(import.meta.url)); const root=join(d,'../..'); const map=join(d,'data/default.json'); fs.copyFileSync(map, join(root,'docs/public/workflow-map.json')); fs.copyFileSync(map, join(root,'apps/web/public/workflow-map.json')); fs.copyFileSync(join(root,'packages/ui/tokens.css'), join(root,'docs/public/styles/atom-tokens.css')); console.log('synced workflow-map.json → docs/public + apps/web/public; atom-tokens.css → docs/public/styles');\"",
+    "sync-workflow": "npm run build-map && npm run sync-docs-map"
   },
   "dependencies": {
+    "@atom-ai/toolkit": "*",
     "@supabase/supabase-js": "^2.49.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

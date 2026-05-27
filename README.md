@@ -27,7 +27,7 @@ Servicios por defecto:
 | Documentación (Mintlify) | http://localhost:3000 |
 | API (Express) | http://localhost:4000 |
 
-Flujo sugerido (scope 1): abre el sitio → **Ver Workflow** (`/workflow`) para el mapa interactivo; la guía textual sigue en Mintlify (**Workflow → Mapa conceptual**).
+Flujo sugerido: sitio → **Ver Workflow** → selecciona un skill → **Ejecutar** (necesita `ANTHROPIC_API_KEY` u otro provider en `.env`). Skills en [`packages/toolkit/skills`](packages/toolkit/skills).
 
 ### Si Mintlify no arranca (`npm run dev`)
 
@@ -42,13 +42,21 @@ Definidas en [`.env.example`](.env.example). Puntos clave:
 - `PUBLIC_DOCS_URL` / `PUBLIC_API_URL` en `apps/web/.env` para enlaces del sitio y fetch del mapa desde el cliente.
 - `PUBLIC_WEB_URL` (opcional) en `docs/.env` si automatizas enlaces al sitio; `PUBLIC_API_URL` en `docs/.env` solo si algún snippet cliente lo necesita.
 - `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` son **opcionales** en v1; el endpoint `/health` indica `configured` o `skipped`. La **service role** solo debe usarse en el servidor Express, nunca en el cliente.
+- **Toolkit / LLM (solo servidor):** `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `KIMI_API_KEY`, `ATOM_PROVIDER`, `ATOM_MODEL` para `POST /api/v1/projects/:id/run/:skillId`.
 
 ## Paquetes
 
 - [`apps/web`](apps/web) — Astro + Tailwind con preset compartido [`packages/ui`](packages/ui); mapa interactivo en **`/workflow`** (React + React Flow).
-- [`docs`](docs) — Mintlify; `npm run sync-docs-map -w @atom-ai/api` copia `workflow-map.json` a `docs/public/` y `apps/web/public/`, y `atom-tokens.css` a `docs/public/styles/`.
-- [`apps/api`](apps/api) — Express: `GET /health`, `GET /api/v1/maps/:id` (JSON en `apps/api/data`).
+- [`docs`](docs) — Mintlify; `npm run sync-workflow` regenera el mapa desde el registry y copia artefactos públicos.
+- [`apps/api`](apps/api) — Express: mapas, skills, pipelines, runs (`/api/v1/skills`, `/api/v1/projects/...`).
+- [`packages/toolkit`](packages/toolkit) — Skills (`SKILL.md`), `_registry.yml`, runner LLM (Claude/Gemini/Kimi).
 - [`packages/ui`](packages/ui) — Tokens CSS (`tokens.css`) y preset Tailwind (`tailwind-preset.js`).
+
+### Sincronizar mapa tras editar skills
+
+```bash
+npm run sync-workflow
+```
 
 ## Stack futuro (agente de chat)
 
