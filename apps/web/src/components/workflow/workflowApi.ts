@@ -1,8 +1,20 @@
+/**
+ * En producción (Vercel) usamos el mismo origen + rewrite en vercel.json → Render,
+ * así evitamos CORS. En local, PUBLIC_API_URL apunta a Express (:4000).
+ */
 function getApiBase(): string {
-  if (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) {
-    return import.meta.env.PUBLIC_API_URL;
+  const explicit = import.meta.env.PUBLIC_API_URL?.trim().replace(/\/$/, "") ?? "";
+  const crossOrigin = import.meta.env.PUBLIC_API_CROSS_ORIGIN === "true";
+
+  if (typeof window !== "undefined" && import.meta.env.PROD && !crossOrigin) {
+    return window.location.origin;
   }
+  if (explicit) return explicit;
   return "http://localhost:4000";
+}
+
+export function getWorkflowApiBaseForDebug(): string {
+  return `${getApiBase()}/api/v1`;
 }
 
 const base = () => `${getApiBase()}/api/v1`;

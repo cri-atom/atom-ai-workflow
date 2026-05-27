@@ -15,6 +15,7 @@ import {
   fetchSkillMarkdown,
   fetchSkillOutput,
   fetchToolkitConfig,
+  getWorkflowApiBaseForDebug,
   runSkillApi,
 } from "./workflowApi";
 
@@ -48,10 +49,16 @@ type DetailPanelProps = {
 
 export function DetailPanel({ node, projectId = DEFAULT_PROJECT }: DetailPanelProps) {
   const queryClient = useQueryClient();
-  const skillId = node?.data?.skillId;
+  const skillId = node?.data?.skillId ?? node?.id;
+  const isSkillNode = Boolean(node?.data?.skillId || node?.data?.nodeKind === "skill");
   const [userInput, setUserInput] = React.useState("");
   const [provider, setProvider] = React.useState("");
   const [model, setModel] = React.useState("");
+  const [activeTab, setActiveTab] = React.useState("skill");
+
+  React.useEffect(() => {
+    setActiveTab(isSkillNode ? "skill" : "topic");
+  }, [node?.id, isSkillNode]);
 
   const { data: toolkitConfig } = useQuery({
     queryKey: ["toolkit-config"],
@@ -71,10 +78,17 @@ export function DetailPanel({ node, projectId = DEFAULT_PROJECT }: DetailPanelPr
     });
   }, [projectId]);
 
-  const { data: skillDoc, isPending: skillLoading } = useQuery({
+  const {
+    data: skillDoc,
+    isPending: skillLoading,
+    isError: skillError,
+    error: skillFetchError,
+    refetch: refetchSkill,
+  } = useQuery({
     queryKey: ["skill", skillId],
     queryFn: () => fetchSkillMarkdown(skillId!),
-    enabled: Boolean(skillId),
+    enabled: Boolean(skillId) && isSkillNode,
+    retry: 1,
   });
 
   const { data: status } = useQuery({
@@ -118,7 +132,7 @@ export function DetailPanel({ node, projectId = DEFAULT_PROJECT }: DetailPanelPr
   }
 
   const bodyMd = node.data?.bodyMd;
-  const canRun = Boolean(skillId);
+  const canRun = isSkillNode && Boolean(skillId);
 
   return (
     <div className="flex h-full min-h-0 flex-col border-l border-border bg-surface-elevated">
@@ -139,7 +153,12 @@ export function DetailPanel({ node, projectId = DEFAULT_PROJECT }: DetailPanelPr
         ) : null}
       </div>
 
-      <Tabs className="flex min-h-0 flex-1 flex-col px-6 pb-6 pt-4" defaultValue={canRun ? "skill" : "topic"}>
+      <Tabs
+        key={node.id}
+        className="flex min-h-0 flex-1 flex-col px-6 pb-6 pt-4"
+        value={activeTab}
+        onValueChange={setActiveTab}
+      >
         <TabsList className="w-full flex-wrap justify-start">
           {canRun ? <TabsTrigger value="skill">Skill</TabsTrigger> : null}
           <TabsTrigger value="topic">Contexto</TabsTrigger>
@@ -152,12 +171,26 @@ export function DetailPanel({ node, projectId = DEFAULT_PROJECT }: DetailPanelPr
             <ScrollArea className="mt-4 h-[min(480px,calc(100vh-240px))] pr-3">
               {skillLoading ? (
                 <p className="text-sm text-[hsl(var(--muted-foreground))]">Cargando SKILL.md…</p>
+              ) : skillError ? (
+                <div className="space-y-2 text-sm">
+                  <p className="text-red-600">
+                    {skillFetchError instanceof Error
+                      ? skillFetchError.message
+                      : "No se pudo cargar el skill desde el API."}
+                  </p>
+                  <p className="text-[hsl(var(--muted-foreground))]">
+                    API: <code className="text-xs">{getWorkflowApiBaseForDebug()}/skills/{skillId}</code>
+                  </p>
+                  <Button type="button" variant="outline" size="sm" onClick={() => refetchSkill()}>
+                    Reintentar
+                  </Button>
+                </div>
               ) : skillDoc?.markdown ? (
                 <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm]}>
                   {skillDoc.markdown}
                 </ReactMarkdown>
               ) : (
-                <p className="text-sm text-[hsl(var(--muted-foreground))]">No hay skill asociado.</p>
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">Contenido del skill vacío.</p>
               )}
             </ScrollArea>
           </TabsContent>

@@ -34,13 +34,24 @@ const docsOrigins = (process.env.DOCS_ORIGIN ?? "")
 
 const allowedOrigins = new Set([...defaultOrigins, ...extraOrigins, ...docsOrigins]);
 
+const allowVercelPreviews = process.env.CORS_ALLOW_VERCEL !== "false";
+
+function isAllowedOrigin(origin: string | undefined): boolean {
+  if (!origin) return true;
+  if (allowedOrigins.has(origin)) return true;
+  if (allowVercelPreviews && /^https:\/\/[\w.-]+\.vercel\.app$/.test(origin)) return true;
+  return false;
+}
+
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.has(origin)) {
-        callback(null, true);
+      if (isAllowedOrigin(origin)) {
+        callback(null, origin ?? true);
         return;
       }
+      // eslint-disable-next-line no-console
+      console.warn("[cors] blocked origin:", origin);
       callback(null, false);
     },
   }),

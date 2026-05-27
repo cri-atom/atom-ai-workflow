@@ -4,7 +4,7 @@ Sustituye los placeholders por tus URLs reales.
 
 | Servicio | Rol | Ejemplo |
 |----------|-----|---------|
-| **Vercel** | Sitio Astro + `/workflow` | `https://atom-ai-workflow.vercel.app` |
+| **Vercel** | Sitio Astro + `/workflow` | `https://atom-ai-workflow-web.vercel.app` |
 | **Render** | API Express + runs LLM | `https://atom-ai-api.onrender.com` |
 | **Mintlify** | Documentación | `https://tu-org.mintlify.app` o dominio custom |
 
@@ -29,7 +29,8 @@ En [dashboard.render.com](https://dashboard.render.com) → **New → Web Servic
 | Variable | Valor en producción |
 |----------|---------------------|
 | `PORT` | *(Render lo inyecta; no hace falta definirlo)* |
-| `WEB_ORIGIN` | URL de Vercel **sin** barra final, ej. `https://atom-ai-workflow.vercel.app` |
+| `WEB_ORIGIN` | URL de Vercel **sin** barra final, ej. `https://atom-ai-workflow-web.vercel.app` |
+| `CORS_ALLOW_VERCEL` | `true` (default) — permite cualquier `*.vercel.app` si usas API cross-origin |
 | `DOCS_ORIGIN` | URL pública de Mintlify, ej. `https://atomchat.mintlify.app` |
 | `API_ORIGIN` | URL del propio servicio Render, ej. `https://atom-ai-api.onrender.com` |
 | `ANTHROPIC_API_KEY` | Tu clave (obligatoria para **Run skill**) |
@@ -58,8 +59,13 @@ Tras el deploy, prueba: `https://TU-API.onrender.com/health` → debe responder 
 
 | Variable | Valor |
 |----------|--------|
-| `PUBLIC_API_URL` | URL de Render, ej. `https://atom-ai-api.onrender.com` |
-| `PUBLIC_DOCS_URL` | URL de Mintlify, ej. `https://tu-docs.mintlify.app` |
+| `PUBLIC_DOCS_URL` | URL de Mintlify, ej. `https://criatom.mintlify.app` |
+| `PUBLIC_API_URL` | **No necesario** si usas el proxy de [`apps/web/vercel.json`](apps/web/vercel.json) (recomendado) |
+| `PUBLIC_API_CROSS_ORIGIN` | Solo `true` si insistes en llamar a Render desde el browser (requiere CORS en Render) |
+
+El archivo `apps/web/vercel.json` reescribe `/api/*` → tu servicio Render. La web llama a `/api/v1/...` en el **mismo dominio** y evita CORS.
+
+Edita `destination` en `vercel.json` si tu URL de Render cambia.
 
 Redeploy en Vercel después de guardar (Deployments → Redeploy).
 

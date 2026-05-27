@@ -30,7 +30,7 @@ toolkitRouter.get("/skills/:id", (req, res) => {
     return;
   }
   res.json({
-    id: skill.meta.id,
+    id: req.params.id,
     meta: skill.meta,
     frontmatter: skill.frontmatter,
     markdown: skill.body,

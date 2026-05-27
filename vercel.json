@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build -w @atom-ai/web",
+  "outputDirectory": "apps/web/dist",
+  "framework": "astro",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://atom-ai-workflow.onrender.com/api/:path*"
+    }
+  ]
+}
