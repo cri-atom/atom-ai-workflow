@@ -15,7 +15,11 @@
   "topbarLinks": [
     {
       "name": "Sitio",
-      "url": "http://localhost:4321"
+      "url": "https://REPLACE_WITH_YOUR_VERCEL_URL.vercel.app"
+    },
+    {
+      "name": "Workflow",
+      "url": "https://REPLACE_WITH_YOUR_VERCEL_URL.vercel.app/workflow"
     }
   ],
   "navigation": [

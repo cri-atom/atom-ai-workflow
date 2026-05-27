@@ -68,7 +68,11 @@ Documentado para fases posteriores (no implementado en scope 1):
 
 ## Producción
 
-- Mismo dominio con reverse proxy (`/` → Astro, `/docs` → Mintlify) o subdominio `docs.*`; alinear `PUBLIC_DOCS_URL` y CORS (`WEB_ORIGIN`, `DOCS_ORIGIN` en el API).
+Guía paso a paso: **[DEPLOYMENT.md](DEPLOYMENT.md)** (Vercel web + Render API + Mintlify docs).
+
+- **Vercel:** `PUBLIC_API_URL`, `PUBLIC_DOCS_URL` en el proyecto web.
+- **Render:** `WEB_ORIGIN`, `DOCS_ORIGIN`, claves LLM (`ANTHROPIC_API_KEY`, …).
+- **Mintlify:** conectar carpeta `docs/` y actualizar URLs en `docs/mint.json`.
 
 ## Licencia
 
